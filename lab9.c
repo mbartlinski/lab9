@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#define HASHSIZE 100;
 
 // RecordType
 struct RecordType
@@ -7,17 +10,52 @@ struct RecordType
 	char	name;
 	int		order; 
 };
-
+struct Node{
+	struct RecordType data;
+	struct Node *next;
+};
 // Fill out this structure
 struct HashType
 {
-
+	struct Node *head;
 };
 
 // Compute the hash function
 int hash(int x)
 {
+	return x % HASHSIZE;
+}
+//new record into hash table
+void insert(struct HashType hashTable[], struct RecordType record){
+	int index = hash(record.id);
 
+	struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
+	newNode->data = record;
+	newNode->next = NULL;
+
+	if(hashTable[index].head == NULL){
+		hashTable[index].head = newNode;
+	}
+	else{
+		struct Node *cur = hashTable[index].head;
+		while(cur->next != NULL){
+			cur = cur->next;
+		}
+		cur->next = newNode;
+	}
+
+}
+//displey records
+void displayRecordsinHash(struct HashType hashTable[], int hashSize){
+	for( int i = 0 ; i < hashSize; ++i){
+		printf("Index %d ->", i);
+		struct Node *cur = hashTable[i].head;
+		while (cur != NULL){
+			printf("%d %c %d -> ", cur -> data.id, cur ->data.name, cur ->data.order);
+			cur = cur -> next;
+		}
+		printf("\n");
+	}
 }
 
 // parses input file to an integer array
